@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WestPay.Access.API</name>
+    </assembly>
+    <members>
+        <member name="M:WestPay.Access.API.Controllers.V1.BooksController.Get">
+            <summary>
+            Get all books
+            </summary>
+        </member>
+        <member name="M:WestPay.Access.API.Controllers.V1.BooksController.Get(System.Int32)">
+            <summary>
+            Get book by id
+            </summary>
+        </member>
+        <member name="M:WestPay.Access.API.Controllers.V1.BooksController.Post(WestPay.Access.DAL.Entities.Library.Book)">
+             <summary>
+             Creates a Book
+             </summary>
+             <remarks>
+             Sample request:
+            
+                 POST /books
+                 {
+                    "Title": "Item1",
+                    "ISBN": true,
+                    "publisherId": 1
+                 }
+            
+             </remarks>
+             <param name="model"></param>
+             <returns>A newly created Book</returns>
+             <response code="201">Returns the newly created book with location</response>
+             <response code="400">If the item is null</response>
+        </member>
+        <member name="M:WestPay.Access.API.Controllers.V1.BooksController.Put(System.Int32,WestPay.Access.DAL.Entities.Library.Book)">
+            <summary>
+            Update a specific book
+            </summary>
+            <param name="model"></param>   
+            <param name="id"></param>   
+        </member>
+        <member name="M:WestPay.Access.API.Controllers.V1.BooksController.Delete(System.Int32)">
+            <summary>
+            Deletes a specific Book
+            </summary>
+            <param name="id"></param>   
+        </member>
+    </members>
+</doc>
