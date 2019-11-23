@@ -1,6 +1,6 @@
 using System;
 
-namespace WestPay.Auth.Models
+namespace WestPay.Access.MvcClient.Models
 {
     public class ErrorViewModel
     {

@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WestPay.Auth.Configurations;
+using WestPay.Auth.Data;
+using WestPay.Auth.Data.Seed;
 
 namespace WestPay.Auth
 {
@@ -22,7 +27,6 @@ namespace WestPay.Auth
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
@@ -32,17 +36,36 @@ namespace WestPay.Auth
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            var connectionString = Configuration.GetConnectionString("WestPayOauth");
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+
+            services.AddDbContext<ApplicationDbContext>(builder =>
+                builder.UseSqlServer(connectionString, 
+                    sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
-                .AddInMemoryClients(Clients.GetClients())
-                .AddInMemoryApiResources(Resources.GetApiResources())
-                .AddInMemoryIdentityResources(Resources.GetIdentityResources())
-                .AddTestUsers(Users.GetUsers());
+                .AddOperationalStore(options =>
+                    options.ConfigureDbContext = builder => 
+                    builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+                .AddConfigurationStore(options =>
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+                .AddAspNetIdentity<IdentityUser>();
+
+                //.AddInMemoryClients(Clients.GetClients())
+                //.AddInMemoryApiResources(Resources.GetApiResources())
+                //.AddInMemoryIdentityResources(Resources.GetIdentityResources())
+                //.AddTestUsers(Users.GetUsers());
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -59,15 +82,19 @@ namespace WestPay.Auth
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            
+
+            DBInitialize.InitializeDbWithTestData(app);
+
             app.UseIdentityServer();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //});
+
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
