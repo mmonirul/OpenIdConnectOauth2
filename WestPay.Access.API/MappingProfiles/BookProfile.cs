@@ -9,11 +9,14 @@ using WestPay.Access.DAL.Entities.Library;
 
 namespace WestPay.Access.API.MappingProfiles
 {
-    public class BookProfile : Profile
+    // Rename to LibraryProfile
+    public class BookProfile : Profile 
     {
         public BookProfile()
         {
             CreateMap<Book, BookViewModel>().ReverseMap();
+
+            CreateMap<Author, AuthorViewModel>().ReverseMap();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WestPay.Access.DAL.Entities.Library;
 
 namespace WestPay.Access.API.Dtos
 {
@@ -12,5 +13,7 @@ namespace WestPay.Access.API.Dtos
         public string Title { get; set; }
         public string Language { get; set; }
         public int Pages { get; set; }
+
+        public AuthorViewModel Author { get; set; }
     }
 }

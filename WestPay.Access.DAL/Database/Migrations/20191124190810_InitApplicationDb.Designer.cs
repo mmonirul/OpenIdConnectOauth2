@@ -9,8 +9,8 @@ using WestPay.Access.DAL.Database;
 namespace WestPay.Access.DAL.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20191122160318_TarminalEntities")]
-    partial class TarminalEntities
+    [Migration("20191124190810_InitApplicationDb")]
+    partial class InitApplicationDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,14 +21,18 @@ namespace WestPay.Access.DAL.Database.Migrations
 
             modelBuilder.Entity("WestPay.Access.DAL.Entities.Library.Author", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AuthorBiographyId");
 
                     b.Property<string>("FirstName");
 
                     b.Property<string>("LastName");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorBiographyId");
 
                     b.ToTable("Authors");
                 });
@@ -37,8 +41,6 @@ namespace WestPay.Access.DAL.Database.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AuthorId");
 
                     b.Property<string>("Biography");
 
@@ -50,9 +52,6 @@ namespace WestPay.Access.DAL.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId")
-                        .IsUnique();
-
                     b.ToTable("Biographies");
                 });
 
@@ -61,7 +60,7 @@ namespace WestPay.Access.DAL.Database.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AuthorId");
+                    b.Property<Guid>("AuthorId");
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -256,11 +255,11 @@ namespace WestPay.Access.DAL.Database.Migrations
                     b.ToTable("TerminalOperationSetting");
                 });
 
-            modelBuilder.Entity("WestPay.Access.DAL.Entities.Library.AuthorBiography", b =>
+            modelBuilder.Entity("WestPay.Access.DAL.Entities.Library.Author", b =>
                 {
-                    b.HasOne("WestPay.Access.DAL.Entities.Library.Author", "Author")
-                        .WithOne("Biography")
-                        .HasForeignKey("WestPay.Access.DAL.Entities.Library.AuthorBiography", "AuthorId")
+                    b.HasOne("WestPay.Access.DAL.Entities.Library.AuthorBiography", "Biography")
+                        .WithMany()
+                        .HasForeignKey("AuthorBiographyId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

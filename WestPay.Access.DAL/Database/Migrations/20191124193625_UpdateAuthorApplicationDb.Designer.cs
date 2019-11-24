@@ -9,8 +9,8 @@ using WestPay.Access.DAL.Database;
 namespace WestPay.Access.DAL.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20191122104401_Initial")]
-    partial class Initial
+    [Migration("20191124193625_UpdateAuthorApplicationDb")]
+    partial class UpdateAuthorApplicationDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace WestPay.Access.DAL.Database.Migrations
 
             modelBuilder.Entity("WestPay.Access.DAL.Entities.Library.Author", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("FirstName");
@@ -35,10 +35,7 @@ namespace WestPay.Access.DAL.Database.Migrations
 
             modelBuilder.Entity("WestPay.Access.DAL.Entities.Library.AuthorBiography", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AuthorId");
+                    b.Property<Guid>("Id");
 
                     b.Property<string>("Biography");
 
@@ -50,9 +47,6 @@ namespace WestPay.Access.DAL.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId")
-                        .IsUnique();
-
                     b.ToTable("Biographies");
                 });
 
@@ -61,7 +55,7 @@ namespace WestPay.Access.DAL.Database.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AuthorId");
+                    b.Property<Guid>("AuthorId");
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -131,11 +125,136 @@ namespace WestPay.Access.DAL.Database.Migrations
                     b.ToTable("Publishers");
                 });
 
+            modelBuilder.Entity("WestPay.Access.DAL.Entities.Terminals.OperationSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("ChipXpress");
+
+                    b.Property<int>("LastEvent");
+
+                    b.Property<string>("PhysicalTerminalId")
+                        .IsRequired()
+                        .HasMaxLength(40);
+
+                    b.Property<string>("ReceiptMerchantName")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("ReceiptPhoneNumber")
+                        .HasMaxLength(30);
+
+                    b.Property<bool>("Signature");
+
+                    b.Property<string>("TerminalModelId")
+                        .IsRequired();
+
+                    b.Property<string>("TerminalOperationModeId")
+                        .IsRequired();
+
+                    b.Property<int>("TerminalidOrderId");
+
+                    b.Property<bool>("Tipping");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OperationSetting");
+                });
+
+            modelBuilder.Entity("WestPay.Access.DAL.Entities.Terminals.PhysicalTerminal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("CustomerId");
+
+                    b.Property<int>("LastEvent");
+
+                    b.Property<string>("MerchantPassword");
+
+                    b.Property<string>("Serial");
+
+                    b.Property<string>("TerminalId");
+
+                    b.Property<int>("TerminalModelId");
+
+                    b.Property<int>("TerminalOperationSettingId");
+
+                    b.Property<DateTime?>("TimeCreated");
+
+                    b.Property<DateTime?>("TimeModified");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TerminalModelId");
+
+                    b.ToTable("PhysicalTerminals");
+                });
+
+            modelBuilder.Entity("WestPay.Access.DAL.Entities.Terminals.TerminalModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool?>("IsTerminal");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("SerialPrefix");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TerminalModels");
+                });
+
+            modelBuilder.Entity("WestPay.Access.DAL.Entities.Terminals.TerminalOperationMode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(30);
+
+                    b.Property<string>("RawName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TerminalOperationModes");
+                });
+
+            modelBuilder.Entity("WestPay.Access.DAL.Entities.Terminals.TerminalOperationSetting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("FirstTransactionTime");
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<DateTime?>("LastTransactionTime");
+
+                    b.Property<string>("PAVersion")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("ReceivedParameters")
+                        .HasMaxLength(220);
+
+                    b.Property<int>("TerminalId");
+
+                    b.Property<int>("TerminalOperatingModeId");
+
+                    b.Property<int>("TerminalidId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TerminalOperationSetting");
+                });
+
             modelBuilder.Entity("WestPay.Access.DAL.Entities.Library.AuthorBiography", b =>
                 {
                     b.HasOne("WestPay.Access.DAL.Entities.Library.Author", "Author")
                         .WithOne("Biography")
-                        .HasForeignKey("WestPay.Access.DAL.Entities.Library.AuthorBiography", "AuthorId")
+                        .HasForeignKey("WestPay.Access.DAL.Entities.Library.AuthorBiography", "Id")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -162,6 +281,14 @@ namespace WestPay.Access.DAL.Database.Migrations
                     b.HasOne("WestPay.Access.DAL.Entities.Library.Category", "Category")
                         .WithMany("BookCategories")
                         .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("WestPay.Access.DAL.Entities.Terminals.PhysicalTerminal", b =>
+                {
+                    b.HasOne("WestPay.Access.DAL.Entities.Terminals.TerminalModel", "TerminalModel")
+                        .WithMany()
+                        .HasForeignKey("TerminalModelId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

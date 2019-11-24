@@ -39,10 +39,40 @@ namespace WestPay.Auth.Configurations
                     Password = "Password@1234!",
                     Claims = new List<Claim>
                     {
-                        new Claim(JwtClaimTypes.Email, "paiduser@westpay.se"),
+                        new Claim(JwtClaimTypes.Email, "paiduser@su.se"),
                         new Claim(JwtClaimTypes.Role, "paid-user")
                     }
-                }
+                },
+                new TestUser
+                {
+                    SubjectId = "b7539694-97e7-4dfe-84da-b4256e1ff5c7",
+                    Username = "Erik",
+                    Password = "123456",
+
+                    Claims = new List<Claim>
+                    {
+                        new Claim(JwtClaimTypes.Email, "erik@su.se"),
+                        new Claim("given_name", "Erik"),
+                        new Claim("family_name", "Nilsson"),
+                        new Claim("address", "Infra city Stockholm"),
+                        new Claim("role", "admin")
+                    }
+                },
+                new TestUser
+                {
+                    SubjectId = "d860efca-22d9-47fd-8249-791ba61b07c7",
+                    Username = "Markus",
+                    Password = "123456",
+
+                    Claims = new List<Claim>
+                    {
+                        new Claim(JwtClaimTypes.Email, "markus@su.se"),
+                        new Claim("given_name", "Markus"),
+                        new Claim("family_name", "Olsson"),
+                        new Claim("address", "Central Stockholm"),
+                        new Claim("role", "user")
+                    }
+                },
 
             };
         }

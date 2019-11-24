@@ -36,32 +36,32 @@ namespace WestPay.Auth
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            var connectionString = Configuration.GetConnectionString("WestPayOauth");
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            //var connectionString = Configuration.GetConnectionString("WestPayOauth");
+            //var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            services.AddDbContext<ApplicationDbContext>(builder =>
-                builder.UseSqlServer(connectionString, 
-                    sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
+            //services.AddDbContext<ApplicationDbContext>(builder =>
+            //    builder.UseSqlServer(connectionString, 
+            //        sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            //services.AddIdentity<IdentityUser, IdentityRole>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
 
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
-                .AddOperationalStore(options =>
-                    options.ConfigureDbContext = builder => 
-                    builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
-                .AddConfigurationStore(options =>
-                    options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
-                .AddAspNetIdentity<IdentityUser>();
+                //.AddOperationalStore(options =>
+                //    options.ConfigureDbContext = builder => 
+                //    builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+                //.AddConfigurationStore(options =>
+                //    options.ConfigureDbContext = builder =>
+                //        builder.UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+                //.AddAspNetIdentity<IdentityUser>();
 
-                //.AddInMemoryClients(Clients.GetClients())
-                //.AddInMemoryApiResources(Resources.GetApiResources())
-                //.AddInMemoryIdentityResources(Resources.GetIdentityResources())
-                //.AddTestUsers(Users.GetUsers());
+                .AddInMemoryClients(Clients.GetClients())
+                .AddInMemoryApiResources(Resources.GetApiResources())
+                .AddInMemoryIdentityResources(Resources.GetIdentityResources())
+                .AddTestUsers(Users.GetUsers());
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -83,16 +83,9 @@ namespace WestPay.Auth
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            DBInitialize.InitializeDbWithTestData(app);
+            //DBInitialize.InitializeDbWithTestData(app);
 
             app.UseIdentityServer();
-
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //        name: "default",
-            //        template: "{controller=Home}/{action=Index}/{id?}");
-            //});
 
             app.UseMvcWithDefaultRoute();
         }

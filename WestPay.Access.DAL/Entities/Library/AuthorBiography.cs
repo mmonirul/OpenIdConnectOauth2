@@ -1,15 +1,16 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WestPay.Access.DAL.Entities.Library 
 { 
     public class AuthorBiography
     {
-        public int Id { get; set; }
+        [ForeignKey("Author")]
+        public Guid Id { get; set; }
         public string Biography { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string PlaceOfBirth { get; set; }
         public string Nationality { get; set; }
-        public int AuthorId { get; set; }
-        public Author Author { get; set; }
+        public virtual Author Author { get; set; }
     }
 }

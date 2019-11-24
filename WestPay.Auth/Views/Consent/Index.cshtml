@@ -22,11 +22,11 @@
                 <input type="hidden" asp-for="ReturnUrl" />
 
                 <div>Uncheck the permissions you do not wish to grant.</div>
-                
+
                 @if (Model.IdentityScopes.Any())
                 {
-                    <div class="panel panel-default consent-buttons">
-                        <div class="panel-heading">
+                    <div class="card card-default consent-buttons">
+                        <div class="card-header">
                             <span class="glyphicon glyphicon-user"></span>
                             Personal Information
                         </div>
@@ -41,8 +41,8 @@
 
                 @if (Model.ResourceScopes.Any())
                 {
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
+                    <div class="card card-default mt-3">
+                        <div class="card-header">
                             <span class="glyphicon glyphicon-tasks"></span>
                             Application Access
                         </div>
@@ -57,7 +57,7 @@
 
                 @if (Model.AllowRememberConsent)
                 {
-                    <div class="consent-remember">
+                    <div class="consent-remember my-1">
                         <label>
                             <input class="consent-scopecheck" asp-for="RememberConsent" />
                             <strong>Remember My Decision</strong>

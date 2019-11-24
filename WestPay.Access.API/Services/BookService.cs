@@ -34,9 +34,20 @@ namespace WestPay.Access.API.Services
 
         }
 
-        public async Task<IEnumerable<Book>> GetAllBooksAsync()
+        public async Task<IEnumerable<Book>> GetAllBooksAsync(string authorId = null)
         {
-            return await _unitOfWork.Books.GetAsync();
+            var books = Enumerable.Empty<Book>();
+
+            if (Guid.TryParse(authorId, out var id))
+            {
+                books = await _unitOfWork.Books.GetAsync(b => b.AuthorId == id, b => b.Author);
+            }
+            else
+            {
+                books = await _unitOfWork.Books.GetAsync(null, b => b.Author);
+            }
+
+            return books;
         }
         public async Task<IEnumerable<Book>> GetBooksIncludingAuthorAsync()
         {

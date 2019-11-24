@@ -1,0 +1,22 @@
+﻿@model WestPay.Access.MvcClient.Dtos.Books.BookIndexViewModel
+
+@{
+    ViewData["Title"] = "Books";
+}
+
+<h1>Books</h1>
+<div class="row">
+    @foreach (var book in Model.Books)
+    {
+        <div class="col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item"> Title: @book.Title</li>
+                <li class="list-group-item">Isbn: @book.ISBN</li>
+            </ul>
+        </div>
+    }
+</div>
+
+
+
+
