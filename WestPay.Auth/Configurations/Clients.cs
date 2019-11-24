@@ -32,19 +32,29 @@ namespace WestPay.Auth.Configurations
                 },
                 new Client {
                     ClientId = "openIdConnectMvcClient",
-                    ClientName = "Example Implicit MVC Client Application",
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    ClientName = "Example Hybrid/Implicit MVC Client Application (Library)",
+                    ClientSecrets = new List<Secret> {
+                        new Secret("secret".Sha256()),
+                    },
+                    AllowedGrantTypes = GrantTypes.Hybrid, //GrantTypes.Implicit,
                     AllowedScopes = new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
-                        "role",
+                        IdentityServerConstants.StandardScopes.Address,
+                        "roles",
                         "west-test-api",
                         "WestApi.write"
                     },
-                    RedirectUris = new List<string> {"https://localhost:44330/signin-oidc"},
-                    PostLogoutRedirectUris = new List<string> {"https://localhost:44330"}
+                    RedirectUris = new List<string> 
+                    {
+                        "https://localhost:44330/signin-oidc"
+                    },
+                    PostLogoutRedirectUris = new List<string> 
+                    {
+                        "https://localhost:44330/signout-callback-oidc"
+                    }
                 }
             };
         }

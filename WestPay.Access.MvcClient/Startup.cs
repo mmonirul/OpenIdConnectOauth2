@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityModel;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +12,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using WestPay.Access.MvcClient.Services;
 
 namespace WestPay.Access.MvcClient
 {
@@ -33,17 +38,57 @@ namespace WestPay.Access.MvcClient
 
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = "cookie";
+                options.DefaultScheme = "Cookies";
                 options.DefaultChallengeScheme = "oidc";
             })
-            .AddCookie("cookie")
+            .AddCookie("Cookies", options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.Cookie.Name = "mvcimplicit";
+                options.AccessDeniedPath = "/Authorization/AccessDenied";
+            })
             .AddOpenIdConnect("oidc", options =>
             {
+                options.SignInScheme = "Cookies";
                 options.Authority = "https://localhost:44346/";
                 options.ClientId = "openIdConnectMvcClient";
-                options.SignInScheme = "cookie";
+                options.ResponseType = "code id_token"; // Hybird grants types
+                options.RequireHttpsMetadata = false;
+
+                //options.CallbackPath = new PathString("");
+                //options.Scope.Clear();
+                options.Scope.Add("openid");
+                options.Scope.Add("profile");
+                options.Scope.Add("address");
+                options.Scope.Add("email");
+                options.Scope.Add("roles");
+                options.Scope.Add("west-test-api");
+                options.SaveTokens = true;
+
+                options.ClientSecret = "secret";
+                options.GetClaimsFromUserInfoEndpoint = true;
+                
+                options.ClaimActions.Remove("amr");
+                options.ClaimActions.DeleteClaim("sid");
+                options.ClaimActions.DeleteClaim("idp");
+
+                options.ClaimActions.MapUniqueJsonKey("role", "role");
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = JwtClaimTypes.GivenName,
+                    RoleClaimType = JwtClaimTypes.Role
+                };
+
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            // register an IHttpContextAccessor so we can access the current
+            // HttpContext in services by injecting it
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            // register an IAccessHttpClient
+            services.AddScoped<IAccessHttpClient, AccessHttpClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,12 +111,13 @@ namespace WestPay.Access.MvcClient
             
             app.UseAuthentication();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //});
+            app.UseMvcWithDefaultRoute();
         }
     }
 }

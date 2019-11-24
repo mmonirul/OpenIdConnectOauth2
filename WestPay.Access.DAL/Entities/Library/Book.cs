@@ -19,7 +19,7 @@ namespace WestPay.Access.DAL.Entities.Library
         public virtual Publisher Publisher { get; set; }
         public Guid PublisherId { get; set; }
         public virtual Author Author { get; set; }
-        public int AuthorId { get; set; }
+        public Guid AuthorId { get; set; }
         public ICollection<BookCategory> BookCategories { get; set; } = new List<BookCategory>();
     }
 }

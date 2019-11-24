@@ -23,6 +23,9 @@ namespace WestPay.Auth.Configurations
 
                 },
                 new ApiResource("west-test-api", "Westpay test apis")
+                {
+                    UserClaims = {"role"}
+                }
             };
         }
         public static IEnumerable<IdentityResource> GetIdentityResources()
@@ -30,10 +33,12 @@ namespace WestPay.Auth.Configurations
             return new List<IdentityResource> {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResources.Address(),
                 new IdentityResources.Email(),
                 new IdentityResource
                 {
-                    Name = "role",
+                    Name = "roles",
+                    DisplayName = "Your role(s)",
                     UserClaims = new List<string> { "role" }
                 }
             };

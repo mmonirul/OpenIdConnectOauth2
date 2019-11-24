@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using WestPay.Access.API.Dtos;
@@ -28,11 +30,22 @@ namespace WestPay.Access.API.Controllers.V1
         /// </summary>
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<BookViewModel>>> Get()
         {
-            var books = await _bookService.GetAllBooksAsync();
+            var authorId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var books = Enumerable.Empty<Book>();
+
+            if(User.IsInRole("admin"))
+            {
+                books = await _bookService.GetAllBooksAsync();
+                return _mapper.Map<IEnumerable<BookViewModel>>(books).ToList();
+            }
+            
+            books = await _bookService.GetAllBooksAsync(authorId);
 
             return _mapper.Map<IEnumerable<BookViewModel>>(books).ToList();
+
         }
 
         /// <summary>

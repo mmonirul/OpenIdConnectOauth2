@@ -42,8 +42,11 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Show it is fixed to the top */
+    /* Margin bottom by footer height */
+    min-height: 75rem;
+    padding-top: 4.5rem;
+    margin-bottom: 60px;
 }
 .footer {
   position: absolute;
