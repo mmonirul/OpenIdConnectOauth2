@@ -40,7 +40,10 @@ namespace WestPay.Auth.Configurations
                     Name = "roles",
                     DisplayName = "Your role(s)",
                     UserClaims = new List<string> { "role" }
-                }
+                },
+                new IdentityResource("country", "The country you're living in", new List<string> { "country"}),
+                new IdentityResource("subscriptionlevel", "Your subscription level", new List<string> { "subscriptionlevel"})
+
             };
         }
     }

@@ -53,7 +53,8 @@ namespace WestPay.Access.MvcClient.Controllers
             return View();
         }
 
-        [Authorize(Roles ="admin")]
+        //[Authorize(Roles ="admin")]
+        [Authorize(Policy = "ReadWrite")]
         public IActionResult Secure()
         {
             return View();

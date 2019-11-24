@@ -53,9 +53,11 @@ namespace WestPay.Auth.Configurations
                     {
                         new Claim(JwtClaimTypes.Email, "erik@su.se"),
                         new Claim("given_name", "Erik"),
-                        new Claim("family_name", "Nilsson"),
+                        new Claim("family_name", "Olsson"),
+                        new Claim("role", "admin"),
+                        new Claim("country", "SE"),
                         new Claim("address", "Infra city Stockholm"),
-                        new Claim("role", "admin")
+                        new Claim("subscriptionlevel", "gold")
                     }
                 },
                 new TestUser
@@ -69,8 +71,10 @@ namespace WestPay.Auth.Configurations
                         new Claim(JwtClaimTypes.Email, "markus@su.se"),
                         new Claim("given_name", "Markus"),
                         new Claim("family_name", "Olsson"),
+                        new Claim("role", "user"),
+                        new Claim("country", "NO"),
                         new Claim("address", "Central Stockholm"),
-                        new Claim("role", "user")
+                        new Claim("subscriptionlevel", "silver")
                     }
                 },
 

@@ -26,8 +26,10 @@ namespace WestPay.Auth.Configurations
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
+                        "roles",
                         "west-test-api",
-                        "WestApi.read"
+                        "country",
+                        "subscriptionlevel"
                     }
                 },
                 new Client {
@@ -45,7 +47,9 @@ namespace WestPay.Auth.Configurations
                         IdentityServerConstants.StandardScopes.Address,
                         "roles",
                         "west-test-api",
-                        "WestApi.write"
+                        "WestApi.write",
+                        "country",
+                        "subscriptionlevel"
                     },
                     RedirectUris = new List<string> 
                     {
