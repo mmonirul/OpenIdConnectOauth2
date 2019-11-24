@@ -43,8 +43,14 @@ namespace WestPay.Auth.Configurations
                         "west-test-api",
                         "WestApi.write"
                     },
-                    RedirectUris = new List<string> {"https://localhost:44330/signin-oidc"},
-                    PostLogoutRedirectUris = new List<string> {"https://localhost:44330"}
+                    RedirectUris = new List<string> 
+                    {
+                        "https://localhost:44330/signin-oidc"
+                    },
+                    PostLogoutRedirectUris = new List<string> 
+                    {
+                        "https://localhost:44330/signout-callback-oidc"
+                    }
                 }
             };
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -36,12 +37,24 @@ namespace WestPay.Access.MvcClient
                 options.DefaultScheme = "cookie";
                 options.DefaultChallengeScheme = "oidc";
             })
-            .AddCookie("cookie")
+            .AddCookie("cookie", options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.Cookie.Name = "mvcimplicit";
+            })
             .AddOpenIdConnect("oidc", options =>
             {
                 options.Authority = "https://localhost:44346/";
+                options.RequireHttpsMetadata = false;
                 options.ClientId = "openIdConnectMvcClient";
                 options.SignInScheme = "cookie";
+
+                //options.Scope.Clear();
+                //options.Scope.Add("openid");
+                //options.Scope.Add("profile");
+                //options.Scope.Add("email");
+
+                //options.SaveTokens = true;
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -66,12 +79,13 @@ namespace WestPay.Access.MvcClient
             
             app.UseAuthentication();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //});
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
