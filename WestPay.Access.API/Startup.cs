@@ -69,6 +69,16 @@ namespace WestPay.Access.API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", corsBuilder =>
+                {
+                    corsBuilder.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed(origin => origin == "http://localhost:4200")
+                    .AllowCredentials();
+                });
+            });
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
@@ -125,6 +135,7 @@ namespace WestPay.Access.API
                 c.DocumentTitle = "Westpay public Api connector";
             });
 
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
 
             app.UseMvc();

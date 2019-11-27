@@ -63,7 +63,7 @@ namespace WestPay.Access.MvcClient
                 options.SignInScheme = "Cookies";
                 options.Authority = "https://localhost:44346/";
                 options.ClientId = "openIdConnectMvcClient";
-                options.ResponseType = "code id_token"; // Hybird grants types
+                options.ResponseType = "code id_token"; // Hybird grants types ["code" for Authorization code ]
                 options.RequireHttpsMetadata = false;
 
                 //options.CallbackPath = new PathString("");

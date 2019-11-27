@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace WestPay.Access.API.Controllers.V1
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[EnableCors("CorsPolicy")]
     public class BooksController : ControllerBase
     {
         private readonly IBookService _bookService;

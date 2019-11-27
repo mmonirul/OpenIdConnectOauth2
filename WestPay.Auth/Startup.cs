@@ -63,6 +63,18 @@ namespace WestPay.Auth
                 .AddInMemoryIdentityResources(Resources.GetIdentityResources())
                 .AddTestUsers(Users.GetUsers());
 
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("CorsPolicy", corsBuilder =>
+            //    {
+            //        corsBuilder.AllowAnyHeader()
+            //        .AllowAnyMethod()
+            //        .SetIsOriginAllowed(origin => origin == "http://localhost:4200")
+            //        .AllowCredentials();
+            //    });
+            //});
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -83,6 +95,7 @@ namespace WestPay.Auth
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+            //app.UseCors("CorsPolicy");
             //DBInitialize.InitializeDbWithTestData(app);
 
             app.UseIdentityServer();

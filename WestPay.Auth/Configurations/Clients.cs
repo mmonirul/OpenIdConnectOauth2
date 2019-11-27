@@ -32,7 +32,8 @@ namespace WestPay.Auth.Configurations
                         "subscriptionlevel"
                     }
                 },
-                new Client {
+                new Client 
+                {
                     ClientId = "openIdConnectMvcClient",
                     ClientName = "Example Hybrid/Implicit MVC Client Application (Library)",
                     ClientSecrets = new List<Secret> {
@@ -59,6 +60,46 @@ namespace WestPay.Auth.Configurations
                     {
                         "https://localhost:44330/signout-callback-oidc"
                     }
+                },
+                new Client
+                {
+                    ClientId = "ngImplicitClient",
+                    ClientName = " Angular SPA implicit/hybrid client",
+
+                    AccessTokenType = AccessTokenType.Jwt,
+                    AccessTokenLifetime = 330,// 330 seconds, default 60 minutes
+                    
+                    IdentityTokenLifetime = 30,
+                    RequireClientSecret = false,
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    RequirePkce = true,
+
+                    AllowAccessTokensViaBrowser = true,
+                    RedirectUris = new List<string>
+                    {
+                        "http://localhost:4200",
+                        "http://localhost:4200/auth-callback"
+                    },
+                    PostLogoutRedirectUris = new List<string>
+                    {
+                        "http://localhost:4200/unauthorized",
+                        "http://localhost:4200"
+                    },
+                    AllowedCorsOrigins = new List<string>
+                    {
+                        "http://localhost:4200"
+                    },
+                    AllowedScopes = new List<string>
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        IdentityServerConstants.StandardScopes.Address,
+                        "roles",
+                        "west-test-api",
+                        "country",
+                        "subscriptionlevel"
+                    },
                 }
             };
         }
