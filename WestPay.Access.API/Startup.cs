@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IdentityModel;
 using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
 using System.Reflection;
+using WestPay.Access.API.Authorization;
 using WestPay.Access.API.Services;
 using WestPay.Access.API.Services.Interfaces;
 using WestPay.Access.DAL.Database;
@@ -67,6 +69,16 @@ namespace WestPay.Access.API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", corsBuilder =>
+                {
+                    corsBuilder.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed(origin => origin == "http://localhost:4200")
+                    .AllowCredentials();
+                });
+            });
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
@@ -84,6 +96,19 @@ namespace WestPay.Access.API
 
             //    options.Audience = "west-test-api";
             //});
+
+            services.AddAuthorization(authorizationOptions => 
+            {
+                authorizationOptions.AddPolicy(
+                "superAdminOrOwner",
+                policyBuilder =>
+                {
+                    policyBuilder.RequireAuthenticatedUser();
+                    policyBuilder.AddRequirements(new SuperAdminOrOwnerRequirement());
+                });
+            });
+
+            services.AddScoped<IAuthorizationHandler, SuperAdminOrOwnerHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,6 +135,7 @@ namespace WestPay.Access.API
                 c.DocumentTitle = "Westpay public Api connector";
             });
 
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
 
             app.UseMvc();

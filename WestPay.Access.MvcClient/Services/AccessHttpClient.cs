@@ -31,7 +31,7 @@ namespace WestPay.Access.MvcClient.Services
                 _httpClient.SetBearerToken(accessToken);
             }
 
-            _httpClient.BaseAddress = new Uri("https://localhost:5001/");
+            _httpClient.BaseAddress = new Uri("https://localhost:44323/");
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));

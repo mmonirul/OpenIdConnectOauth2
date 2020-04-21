@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthService
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -40,12 +42,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        @if (User.IsInRole("admin"))
+                        @if ((await AuthService.AuthorizeAsync(User, "ReadWrite")).Succeeded)
                         {
                             <li>
                                 <a class="nav-link text-dark" asp-controller="Home" asp-action="Secure"> Secure for admin</a>
                             </li>
                         }
+                        @*@if (User.IsInRole("admin"))
+                        {
+                            <li>
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Secure"> Secure for admin</a>
+                            </li>
+                        }*@
                     </ul>
                     <div>
                         @if (User.Identity.IsAuthenticated)

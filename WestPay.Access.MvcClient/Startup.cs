@@ -36,6 +36,17 @@ namespace WestPay.Access.MvcClient
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddAuthorization(authorizationOptions =>
+            {
+                authorizationOptions.AddPolicy("ReadWrite",
+                    policyBuilder =>
+                    {
+                        policyBuilder.RequireAuthenticatedUser();
+                        policyBuilder.RequireClaim("country", "SE");
+                        policyBuilder.RequireClaim("subscriptionlevel", "gold");
+                    });
+            });
+
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = "Cookies";
@@ -52,7 +63,7 @@ namespace WestPay.Access.MvcClient
                 options.SignInScheme = "Cookies";
                 options.Authority = "https://localhost:44346/";
                 options.ClientId = "openIdConnectMvcClient";
-                options.ResponseType = "code id_token"; // Hybird grants types
+                options.ResponseType = "code id_token"; // Hybird grants types ["code" for Authorization code ]
                 options.RequireHttpsMetadata = false;
 
                 //options.CallbackPath = new PathString("");
@@ -62,6 +73,9 @@ namespace WestPay.Access.MvcClient
                 options.Scope.Add("address");
                 options.Scope.Add("email");
                 options.Scope.Add("roles");
+                options.Scope.Add("country");
+                options.Scope.Add("subscriptionlevel");
+
                 options.Scope.Add("west-test-api");
                 options.SaveTokens = true;
 
@@ -73,6 +87,8 @@ namespace WestPay.Access.MvcClient
                 options.ClaimActions.DeleteClaim("idp");
 
                 options.ClaimActions.MapUniqueJsonKey("role", "role");
+                options.ClaimActions.MapUniqueJsonKey("country", "country");
+                options.ClaimActions.MapUniqueJsonKey("subscriptionlevel", "subscriptionlevel");
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

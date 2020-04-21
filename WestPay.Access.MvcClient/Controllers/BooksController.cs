@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WestPay.Access.MvcClient.Dtos.Books;
@@ -38,6 +39,30 @@ namespace WestPay.Access.MvcClient.Controllers
                 return View(bookIndexViewModel);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                return RedirectToAction("AccessDenied", "Authorization");
+            }
+            throw new Exception($"An error occure while calling the API: { response.ReasonPhrase }");
+        }
+
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var httpClient = await _accessHttpClient.GetClient();
+            var response = await httpClient.GetAsync($"api/books/{id}").ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var bookAsString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var bookViewModel = JsonConvert.DeserializeObject<Book>(bookAsString);
+
+                return View(bookViewModel);
+            }
+            else if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
             {
                 return RedirectToAction("AccessDenied", "Authorization");
             }
